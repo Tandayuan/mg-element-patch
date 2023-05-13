@@ -41,7 +41,7 @@
           <span class="el-select__tags-text">{{ item.currentLabel }}</span>
         </el-tag>
       </transition-group>
-
+      <!-- 多选框的失焦逻辑更改为和单选一致，为了能够派发blur事件。方便公司项目上下左右操作逻辑。 -->
       <input
         type="text"
         class="el-select__input"
@@ -49,7 +49,7 @@
         :disabled="selectDisabled"
         :autocomplete="autoComplete || autocomplete"
         @focus="handleFocus"
-        @blur="softFocus = false"
+        @blur="handleBlur"
         @keyup="managePlaceholder"
         @keydown="resetInputState"
         @keydown.down.prevent="handleNavigate('next')"
@@ -699,6 +699,10 @@
             this.inputLength = 20;
           }
           if (this.filterable) this.$refs.input.focus();
+          // 按下回车选择数据后下拉菜单自动关闭。
+          if (!byClick) {
+            this.visible = false;
+          };
         } else {
           this.$emit('input', option.value);
           this.emitChange(option.value);
@@ -757,6 +761,11 @@
         } else {
           if (this.options[this.hoverIndex]) {
             this.handleOptionSelect(this.options[this.hoverIndex]);
+          } else {
+            // 多选下拉框没有数据时，按下回车键关闭下拉菜单。
+            if (this.multiple) {
+              this.visible = false;
+            }
           }
         }
       },

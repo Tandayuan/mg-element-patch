@@ -25,6 +25,7 @@
         v-if="type !== 'textarea'"
         class="el-input__inner"
         v-bind="$attrs"
+        step="0.000001"
         :type="showPassword ? (passwordVisible ? 'text': 'password') : type"
         :disabled="inputDisabled"
         :readonly="readonly"
